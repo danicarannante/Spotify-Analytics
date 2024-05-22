@@ -98,11 +98,6 @@ class SpotifyApp:
                 if profile_data:
                     print("success")
                     st.write('User profile:', profile_data)
-
-                top = self.get_top_tracks(access_token)
-                if top:
-                    print("retrieving top tracks..........")
-                    st.write(top)
                 
 
                 st.session_state.access_token = access_token
