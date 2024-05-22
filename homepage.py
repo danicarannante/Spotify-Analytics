@@ -9,7 +9,7 @@ from config import CLIENT_ID, CLIENT_SECRET
 # Spotify API credentials
 client_id = CLIENT_ID
 client_secret = CLIENT_SECRET
-redirect_uri = 'https://localhost:8501/callback'  # Your redirect uri
+redirect_uri = 'http://localhost:8502/callback'  # Your redirect uri
 
 # Generate a random state string
 def generate_random_string(length):
