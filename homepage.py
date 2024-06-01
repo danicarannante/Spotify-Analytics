@@ -57,7 +57,17 @@ class SpotifyApp:
         else:
             st.error('Failed to fetch user profile.')
             st.error(response.status_code)
-            return None
+        return None
+
+    def get_tracks(self,artist_id):
+        response = requests.get('https://api.spotify.com/v1/artists/{artist_id}/top-tracks')
+        if response.status_code != 200:
+            st.error('Failed to get top tracks.')
+            return
+        tracks = response.json()['items']
+        st.write(tracks)
+        return
+
 
     
     def get_top_tracks(self, access_token):
@@ -67,11 +77,11 @@ class SpotifyApp:
             st.error('Failed to get top tracks.')
             return
         tracks = response.json()['items']
+        #st.write(response.json())
         st.write("TOP 5 SONGS:")
         for index, item in enumerate(tracks[:5]):
             st.write(f'{index + 1}. {item["name"]} by {item["artists"][0]["name"]}')
-
-        return None     
+        return tracks     
             
     def get_top_artists(self, access_token):
         headers = self.get_api_headers(access_token)
@@ -83,8 +93,11 @@ class SpotifyApp:
         st.write("TOP 5 ARTISTS:")
         for index, item in enumerate(artists[:5]):
             st.write(f'{index + 1}. {item["name"]}')
+            #st.write(f'ARTIST ID : {item["id"]}')
+            #st.button(f'View top tracks for {item["name"]}', on_click = self.get_tracks(item['id']))
 
-        return None    
+        return artists
+
             
     def login(self):
         scope = 'user-read-private user-read-email user-top-read user-follow-read'
@@ -105,10 +118,10 @@ class SpotifyApp:
                 st.session_state.access_token = access_token
                 st.success('Authentication successful!')
                 st.sidebar.write('Logged In')
-                return
+                return 1 # success
             else:
                 st.error('Authentication Failed')
-        return
+        return 0 # failure
 
 
     def run(self):
@@ -121,10 +134,11 @@ class SpotifyApp:
             self.login()
 
         #profile = self.get_user_profile(st.session_state.access_token)
-
+    
         top_tracks_button = st.sidebar.button('Get Top Tracks')
         if top_tracks_button:
             self.get_top_tracks(st.session_state.access_token)
+
             
         top_artists_button = st.sidebar.button('Get Top Artists')
         if top_artists_button:
@@ -135,8 +149,5 @@ class SpotifyApp:
 
 
 
-
 if __name__ == '__main__':
     SpotifyApp()
-
-
